@@ -1,11 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 )
 
 type Line struct {
@@ -13,27 +9,6 @@ type Line struct {
 	upper  int
 	letter byte
 	pw     string
-}
-
-func parseFile(s string) []Line {
-	f, _ := os.Open(s)
-	defer f.Close()
-
-	a := []Line{}
-	scanner := bufio.NewScanner(f)
-
-	for scanner.Scan() {
-		var l Line
-		tmp := strings.Split(scanner.Text(), " ")
-		nums := strings.Split(tmp[0], "-")
-		l.lower, _ = strconv.Atoi(nums[0])
-		l.upper, _ = strconv.Atoi(nums[1])
-		l.letter = tmp[1][0]
-		l.pw = tmp[2]
-		a = append(a, l)
-	}
-
-	return a
 }
 
 func isValid(l Line) bool {

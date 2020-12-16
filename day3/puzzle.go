@@ -1,9 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 )
 
 type Pos struct {
@@ -16,30 +14,6 @@ type Moves struct {
 	// describes movement, as number of right moves, number of down moves
 	right int
 	down  int
-}
-
-func checkError(e error) {
-	if e != nil {
-		fmt.Printf("Fatal - %v\n", e)
-		os.Exit(1)
-	}
-}
-
-func parseFile(s string) []string {
-	// given a file, return a slice of strings,
-	// each of which describes a row on the grid
-	f, fileErr := os.Open(s)
-	defer f.Close()
-	checkError(fileErr)
-
-	a := make([]string, 0, 323)
-	scanner := bufio.NewScanner(f)
-
-	for scanner.Scan() {
-		a = append(a, scanner.Text())
-	}
-
-	return a
 }
 
 func moveDown(p Pos, mv Moves, l int) Pos {
