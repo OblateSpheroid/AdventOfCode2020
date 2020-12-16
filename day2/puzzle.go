@@ -11,7 +11,7 @@ import (
 type Line struct {
 	lower  int
 	upper  int
-	letter rune
+	letter byte
 	pw     string
 }
 
@@ -28,7 +28,7 @@ func parseFile(s string) []Line {
 		nums := strings.Split(tmp[0], "-")
 		l.lower, _ = strconv.Atoi(nums[0])
 		l.upper, _ = strconv.Atoi(nums[1])
-		l.letter = rune(tmp[1][0])
+		l.letter = tmp[1][0]
 		l.pw = tmp[2]
 		a = append(a, l)
 	}
@@ -39,7 +39,7 @@ func parseFile(s string) []Line {
 func isValid(l Line) bool {
 	i := 0
 	for _, v := range l.pw {
-		if v == l.letter {
+		if v == rune(l.letter) {
 			i++
 		}
 	}
@@ -50,10 +50,10 @@ func isValid(l Line) bool {
 }
 
 func isNewValid(l Line) bool {
-	if rune(l.pw[l.lower-1]) == l.letter && rune(l.pw[l.upper-1]) == l.letter {
+	if l.pw[l.lower-1] == l.letter && l.pw[l.upper-1] == l.letter {
 		return false
 	}
-	if rune(l.pw[l.lower-1]) == l.letter || rune(l.pw[l.upper-1]) == l.letter {
+	if l.pw[l.lower-1] == l.letter || l.pw[l.upper-1] == l.letter {
 		return true
 	}
 	return false
