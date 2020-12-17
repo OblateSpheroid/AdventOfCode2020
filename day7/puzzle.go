@@ -41,10 +41,28 @@ func findRecursive(r Rules, m map[string]int) []string {
 	return mapToSlice(m)
 }
 
+func countRecursive(r Rules, b string, p int) int {
+	// r : total rule set
+	// b : bag name, e.g., "shiny gold"
+	// p : parent count
+	i := 0
+	bags := r[b]
+	for bag, c := range bags {
+		if c == 0 {
+			continue // end of line
+		}
+		i += p * c // parents bags * bags in each parent
+		i += countRecursive(r, bag, p*c)
+	}
+	return i
+}
+
 func main() {
 	rules := parseFile("data.txt")
-	fmt.Println(rules["vibrant violet"])
 	init := map[string]int{"shiny gold": 1} // initial map with "shiny gold"
-	sl := findRecursive(rules, init)
-	fmt.Printf("Answer 1: %d\n", len(sl)-1) // but "shiny gold" cannot contain itself
+	sol1 := findRecursive(rules, init)
+	fmt.Printf("Answer 1: %d\n", len(sol1)-1) // but "shiny gold" cannot contain itself
+
+	sol2 := countRecursive(rules, "shiny gold", 1)
+	fmt.Printf("Answer 2: %d\n", sol2)
 }

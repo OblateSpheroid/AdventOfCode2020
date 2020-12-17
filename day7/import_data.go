@@ -32,7 +32,11 @@ func parseFile(s string) Rules {
 		for _, v := range objs {
 			tmp := strings.Split(v, " ")
 			obj := tmp[1] + " " + tmp[2]
-			rules[subj][obj], _ = strconv.Atoi(tmp[0])
+			if tmp[0] != "no" {
+				rules[subj][obj], _ = strconv.Atoi(tmp[0])
+			} else {
+				rules[subj]["other"] = 0
+			}
 		}
 	}
 	return rules
