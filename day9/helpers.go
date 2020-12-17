@@ -32,4 +32,3 @@ func max(sl []int) int {
 	}
 	return m
 }
-
