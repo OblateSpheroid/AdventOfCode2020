@@ -2,22 +2,7 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
-
-func copySlice(sl []int) []int {
-	tmp := make([]int, len(sl))
-	for i, v := range sl {
-		tmp[i] = v
-	}
-	return tmp
-}
-
-func sortSlice(sl []int) []int {
-	sorted := sort.IntSlice(copySlice(sl))
-	sort.Sort(sorted)
-	return sorted
-}
 
 func countDiffs(sorted []int) (int, int) {
 	diff := make(map[int]int)
@@ -32,70 +17,29 @@ func countDiffs(sorted []int) (int, int) {
 	return diff[1], diff[3]
 }
 
-func sameSlice(a, b []int) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i, v := range a {
-		if b[i] != v {
-			return false
+func countPaths(sorted []int) int {
+	m := make(map[int]int)              // m[i] = number of paths to i jolts
+	m[0] = 1                            // start at outlet
+	last_adapt := sorted[len(sorted)-1] // max adapter is last in list
+	device := last_adapt + 3            // jolts needed by device
+	for i := 1; i <= last_adapt; i++ {
+		if isIn(i, sorted) {
+			m[i] = m[i-1] + m[i-2] + m[i-3]
 		}
 	}
-	return true
-}
-
-func hasTried(s []int, tried *[][]int) bool {
-	for _, v := range *tried {
-		if sameSlice(s, v) {
-			return true
-		}
-	}
-	return false
-}
-
-func countArrange(sorted []int, tried *[][]int) int {
-	if hasTried(sorted, tried) {
-		return 0 // this combination has been tried already
-	}
-	*tried = append(*tried, sorted) // add current set to tried list
-	c := 0
-	dispose := []int{}
-	for i, v := range sorted {
-		if i == 0 {
-			if v <= 1 && (sorted[1]-v) <= 1 {
-				c++
-				dispose = append(dispose, i)
-			}
-			continue
-		}
-		if i == (len(sorted) - 1) {
-			continue // can never remove last adapter, will always be needed
-		}
-		if (v-sorted[i-1]) <= 1 && (sorted[i+1]-v) <= 1 {
-			c++
-			dispose = append(dispose, i)
-		}
-	}
-
-	if len(dispose) > 0 {
-		for _, v := range dispose {
-			tmp := append(copySlice(sorted[:v]), sorted[v+1:]...) // remove an unneccessary adapter
-			c += countArrange(tmp, tried)                         // recurse
-		}
-	}
-	return c
+	m[device] = m[device-1] + m[device-2] + m[device-3]
+	return m[device] // number of paths to get to device
 }
 
 func main() {
 	test := parseFile("test1.txt")
 	test = sortSlice(test)
 	test1, test3 := countDiffs(test)
-	tried := [][]int{}
 	fmt.Printf("test answer 1: %d\n", test1*test3)
-	fmt.Printf("test answer 2: %d\n", countArrange(test, &tried))
+	fmt.Printf("test answer 2: %d\n", countPaths(test))
 
-	data := parseFile("data.txt")
-	sorted := sortSlice(data)
-	diff1, diff3 := countDiffs(sorted)
+	data := sortSlice(parseFile("data.txt"))
+	diff1, diff3 := countDiffs(data)
 	fmt.Printf("Answer 1: %d\n", diff1*diff3)
+	fmt.Printf("Answer 2: %d\n", countPaths(data))
 }
