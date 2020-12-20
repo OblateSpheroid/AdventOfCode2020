@@ -26,7 +26,7 @@ func parseFile(s string) []Instruction {
 		line := scanner.Text()
 		n, err := strconv.Atoi(line[1:])
 		checkError(err)
-		inst := Instruction{order: rune(line[0]), num: n}
+		inst := Instruction{order: rune(line[0]), num: float64(n)}
 		a = append(a, inst)
 	}
 

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 )
 
 var m = map[rune]Point{
@@ -15,18 +14,18 @@ var m = map[rune]Point{
 
 type Instruction struct {
 	order rune
-	num   int
+	num   float64
 }
 
 type Ship struct {
-	pt  Point // current position
-	deg int   // current direction in degrees
+	pt  Point   // current position
+	deg float64 // current direction in degrees
 }
 
-func degToWeights(deg int) Point {
-	// Determine x,y weights given a degree using trig
-	radian := float64(deg) * math.Pi / 180.0
-	return Point{math.Cos(radian), math.Sin(radian)}
+type Waypoint struct {
+	pt    Point
+	deg   float64
+	shpPt Point // pt of ship
 }
 
 func (s *Ship) move(inst Instruction) {
@@ -35,10 +34,28 @@ func (s *Ship) move(inst Instruction) {
 	} else if inst.order == 'L' {
 		s.deg += inst.num // turning left increases degrees
 	} else if inst.order == 'F' {
-		w := degToWeights(s.deg)
-		s.pt = s.pt.add(w.magnify(inst.num)) // move forward
+		s.pt = s.pt.fromDeg(s.deg, float64(inst.num))
 	} else {
 		s.pt = s.pt.add(m[inst.order].magnify(inst.num))
+	}
+}
+
+func (w *Waypoint) move(inst Instruction) {
+	if inst.order == 'R' {
+		dist := w.pt.euclid(w.shpPt)
+		w.deg -= inst.num // rotate right decreases degrees
+		w.pt = w.shpPt.fromDeg(w.deg, dist)
+	} else if inst.order == 'L' {
+		dist := w.pt.euclid(w.shpPt)
+		w.deg -= inst.num // rotate left decreases degrees
+		w.pt = w.shpPt.fromDeg(w.deg, dist)
+	} else if inst.order == 'F' {
+		dist := float64(inst.num) * w.pt.euclid(w.shpPt)
+		w.shpPt = w.shpPt.fromDeg(w.deg, dist)
+		w.pt = w.pt.fromDeg(w.deg, dist)
+	} else {
+		w.pt = w.pt.add(m[inst.order].magnify(inst.num))
+		w.deg = w.pt.toDeg(w.shpPt) // recalculate degrees when waypoint moves
 	}
 }
 
@@ -47,16 +64,32 @@ func loop(s *Ship, inst []Instruction) float64 {
 		s.move(i)
 	}
 	md := s.pt.dist(Point{0, 0}) // Manhattan distance from origin
-	return math.Round(md)
+	return md
+}
+
+func loop2(w *Waypoint, inst []Instruction) float64 {
+	for _, i := range inst {
+		w.move(i)
+	}
+	md := w.shpPt.dist(Point{0, 0})
+	return md
 }
 
 func main() {
 	test := parseFile("test1.txt")
 	t := Ship{deg: 0}
-	fmt.Println(25==loop(&t, test))
+	fmt.Println(25 == loop(&t, test))
+
+	t2 := Waypoint{pt: Point{10, 1}, shpPt: Point{0, 0}}
+	t2.deg = t2.pt.toDeg(Point{})
+	fmt.Println(286 == loop2(&t2, test))
 
 	data := parseFile("data.txt")
 	s := Ship{deg: 0} // start facing east
-	sol1 := loop(&s, data)
-	fmt.Printf("Answer 1: %v\n", sol1)
+	fmt.Printf("Answer 1: %v\n", loop(&s, data))
+
+	data2 := parseFile("data.txt")
+	w := Waypoint{pt: Point{10, 1}, shpPt: Point{0, 0}}
+	w.deg = w.pt.toDeg(Point{})
+	fmt.Printf("Answer 2: %v\n", loop2(&w, data2))
 }
