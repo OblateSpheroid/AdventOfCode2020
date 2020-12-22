@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc2020/helpers"
 	"fmt"
 )
 
@@ -37,9 +38,9 @@ func findContigSet(n int, sl []int) (int, int) {
 	// return smallest and largest number of contiguous set
 	for i := 0; i < len(sl)-1; i++ {
 		for j := i + 1; j <= len(sl); j++ {
-			if sum(sl[i:j]) == n {
-				return min(sl[i:j]), max(sl[i:j]) // found min and max numbers of set
-			} else if sum(sl[i:j]) > n {
+			if helpers.Sum(sl[i:j]) == n {
+				return helpers.Min(sl[i:j]), helpers.Max(sl[i:j]) // found min and max numbers of set
+			} else if helpers.Sum(sl[i:j]) > n {
 				break // overshot, go to next i
 			}
 		}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc2020/helpers"
 	"fmt"
 	"math"
 )
@@ -11,14 +12,7 @@ type Seat struct {
 	id  int
 }
 
-func isIn(i int, is []int) bool {
-	for _, v := range is {
-		if i == v {
-			return true
-		}
-	}
-	return false
-}
+var isIn = helpers.IsIn // copy helper function
 
 func parseSeat(s string) Seat {
 	var seat Seat

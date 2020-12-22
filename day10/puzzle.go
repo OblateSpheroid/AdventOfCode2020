@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc2020/helpers"
 	"fmt"
 )
 
@@ -23,7 +24,7 @@ func countPaths(sorted []int) int {
 	last_adapt := sorted[len(sorted)-1] // max adapter is last in list
 	device := last_adapt + 3            // jolts needed by device
 	for i := 1; i <= last_adapt; i++ {
-		if isIn(i, sorted) {
+		if helpers.IsInSorted(i, sorted) {
 			m[i] = m[i-1] + m[i-2] + m[i-3]
 		}
 	}
@@ -33,12 +34,12 @@ func countPaths(sorted []int) int {
 
 func main() {
 	test := parseFile("test1.txt")
-	test = sortSlice(test)
+	test = helpers.SortSlice(test)
 	test1, test3 := countDiffs(test)
 	fmt.Printf("test answer 1: %d\n", test1*test3)
 	fmt.Printf("test answer 2: %d\n", countPaths(test))
 
-	data := sortSlice(parseFile("data.txt"))
+	data := helpers.SortSlice(parseFile("data.txt"))
 	diff1, diff3 := countDiffs(data)
 	fmt.Printf("Answer 1: %d\n", diff1*diff3)
 	fmt.Printf("Answer 2: %d\n", countPaths(data))

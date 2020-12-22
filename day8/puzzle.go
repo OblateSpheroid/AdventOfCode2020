@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc2020/helpers"
 	"fmt"
 )
 
@@ -9,14 +10,7 @@ type Cmd struct {
 	arg int
 }
 
-func isIn(i int, sl []int) bool {
-	for _, v := range sl {
-		if i == v {
-			return true
-		}
-	}
-	return false
-}
+var isIn = helpers.IsIn
 
 func run(c []Cmd) (int, bool) {
 	line_count := len(c)
