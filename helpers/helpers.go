@@ -42,6 +42,32 @@ func IsIn(i int, sl []int) bool {
 	return false
 }
 
+func AppendInPlace(sl *[]int, i ...int) {
+	// helper to append a row to grid
+	for _, j := range i {
+		*sl = append(*sl, j)
+	}
+}
+
+func MakeSeq(min, max int) []int {
+	// make a sequence of numbers based on a min and max
+	sl := []int{}
+	for i := min; i <= max; i++ {
+		AppendInPlace(&sl, i)
+	}
+	return sl
+}
+
+func Drop(sl []int, i int) []int {
+	new := []int{}
+	for _, v := range sl {
+		if v != i {
+			new = append(new, v)
+		}
+	}
+	return new
+}
+
 func IsInMap(key string, m map[string]int) bool {
 	// test if string is a key in a map
 	for k := range m {
