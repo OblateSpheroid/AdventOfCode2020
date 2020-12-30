@@ -16,50 +16,50 @@ func checkError(e error) {
 	}
 }
 
-func parseTickets(s string) [][]int {
+func parseTickets(s string) Tkts {
 	f, fileErr := os.Open(s)
 	defer f.Close()
 	checkError(fileErr)
 
-	sl := [][]int{}
+	sl := Tkts{}
 	scanner := bufio.NewScanner(f)
 
 	for scanner.Scan() {
-		si := []int{}
+		si := Tkt{}
 		line := strings.Split(scanner.Text(), ",")
 		for _, i := range line {
 			n, _ := strconv.Atoi(i)
-			helpers.AppendInPlace(&si, n)
+			si = append(si, n)
 		}
 		sl = append(sl, si)
 	}
 	return sl
 }
 
-func parseMyTicket(s string) []int {
+func parseMyTicket(s string) Tkt {
 	f, fileErr := os.Open(s)
 	defer f.Close()
 	checkError(fileErr)
 
-	sl := []int{}
+	sl := Tkt{}
 	scanner := bufio.NewScanner(f)
 
 	for scanner.Scan() {
 		line := strings.Split(scanner.Text(), ",")
 		for _, i := range line {
 			n, _ := strconv.Atoi(i)
-			helpers.AppendInPlace(&sl, n)
+			sl = append(sl, n)
 		}
 	}
 	return sl
 }
 
-func parseRules(s string) map[string][]int {
+func parseRules(s string) Rules {
 	f, fileErr := os.Open(s)
 	defer f.Close()
 	checkError(fileErr)
 
-	m := make(map[string][]int)
+	m := make(Rules)
 	scanner := bufio.NewScanner(f)
 
 	for scanner.Scan() {
