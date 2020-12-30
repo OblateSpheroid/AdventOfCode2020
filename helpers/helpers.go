@@ -42,6 +42,15 @@ func IsIn(i int, sl []int) bool {
 	return false
 }
 
+func IsInString(s string, sl []string) bool {
+	for _, v := range sl {
+		if s == v {
+			return true
+		}
+	}
+	return false
+}
+
 func AppendInPlace(sl *[]int, i ...int) {
 	// helper to append a row to grid
 	for _, j := range i {
@@ -62,6 +71,16 @@ func Drop(sl []int, i int) []int {
 	new := []int{}
 	for _, v := range sl {
 		if v != i {
+			new = append(new, v)
+		}
+	}
+	return new
+}
+
+func DropString(sl []string, s string) []string {
+	new := []string{}
+	for _, v := range sl {
+		if v != s {
 			new = append(new, v)
 		}
 	}
