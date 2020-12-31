@@ -7,17 +7,20 @@ import (
 )
 
 type P struct {
+	// Send and receive info from goroutine within () - value of parenthetical expression
+	// and remaining string to evaluate.
 	result int
 	str    []string
 }
 
 func evaluate(s []string, starting int, ops string, ch chan P) int {
 	// recursive function to walk through string, evaluating left to right
-	if s[0] == "+" || s[0] == "*" {
-		// apply with new operator
+	switch s[0] {
+	case "+": // apply with new operator
 		return evaluate(s[1:], starting, s[0], ch)
-	} else if s[0] == "(" {
-		// create new goroutine for ()
+	case "*": // apply with new operator
+		return evaluate(s[1:], starting, s[0], ch)
+	case "(": // create new goroutine for ()
 		ch2 := make(chan P)
 		go evaluate(s[1:], 0, "+", ch2) // start over within ()
 		v := <-ch2
@@ -26,18 +29,15 @@ func evaluate(s []string, starting int, ops string, ch chan P) int {
 		} else {
 			return evaluate(v.str, starting*v.result, ops, ch)
 		}
-	} else if s[0] == ")" {
-		// end goroutine and return result
+	case ")": // end goroutine and return result
 		if len(s) > 1 {
 			ch <- P{result: starting, str: s[1:]}
 		} else {
 			ch <- P{result: starting, str: []string{""}}
 		}
-	} else if s[0] == "" {
-		// got END signal, return result so far
+	case "": // got END signal, return result so far
 		return starting
-	} else {
-		// character is a number, add or multiply based on operator
+	default: // character is a number, add or multiply based on operator
 		n, _ := strconv.Atoi(s[0])
 		if len(s) > 1 {
 			if ops == "+" {
@@ -61,6 +61,33 @@ func evaluateData(data [][]string) int {
 	ch := make(chan P)
 	for _, line := range data {
 		c += evaluate(line, 0, "+", ch)
+	}
+	return c
+}
+
+func applyP(s []string) []string {
+	// force addition to happend first by adding ()
+	n := []string{}
+	for i, v := range s {
+		if i < len(s)-1 && s[i+1] == "+" {
+			n = append(n, "(", v)
+		} else if i == 0 {
+			n = append(n, v)
+		} else if s[i-1] == "+" {
+			n = append(n, v, ")")
+		} else {
+			n = append(n, v)
+		}
+	}
+	return n
+}
+
+func evaluateData2(data [][]string) int {
+	c := 0
+	ch := make(chan P)
+	for _, line := range data {
+		lineP := applyP(line)
+		c += evaluate(lineP, 0, "+", ch)
 	}
 	return c
 }
