@@ -1,11 +1,11 @@
+// Some generic helper functions be used by different days
 package helpers
-
-/* Some generic helper functions be used by different days */
 
 import (
 	"sort"
 )
 
+// Return a copy of an integer slice
 func CopySlice(sl []int) []int {
 	tmp := make([]int, len(sl))
 	for i, v := range sl {
@@ -14,14 +14,15 @@ func CopySlice(sl []int) []int {
 	return tmp
 }
 
+// Return a copy of a slice that is sorted
 func SortSlice(sl []int) []int {
 	sorted := sort.IntSlice(CopySlice(sl))
 	sort.Sort(sorted)
 	return sorted
 }
 
+// Test if an integer is in a sorted integer slice
 func IsInSorted(i int, sl []int) bool {
-	// requires slice to be sorted
 	for _, v := range sl {
 		if i == v {
 			return true
@@ -33,6 +34,7 @@ func IsInSorted(i int, sl []int) bool {
 	return false
 }
 
+// Test if an integer is in a slice
 func IsIn(i int, sl []int) bool {
 	for _, v := range sl {
 		if i == v {
@@ -42,6 +44,7 @@ func IsIn(i int, sl []int) bool {
 	return false
 }
 
+// Test if a string is in a slice
 func IsInString(s string, sl []string) bool {
 	for _, v := range sl {
 		if s == v {
@@ -51,15 +54,15 @@ func IsInString(s string, sl []string) bool {
 	return false
 }
 
+// Append an integer string "in place", without returning a new slice
 func AppendInPlace(sl *[]int, i ...int) {
-	// helper to append a row to grid
 	for _, j := range i {
 		*sl = append(*sl, j)
 	}
 }
 
+// Make a sequence of numbers based on a min and max
 func MakeSeq(min, max int) []int {
-	// make a sequence of numbers based on a min and max
 	sl := []int{}
 	for i := min; i <= max; i++ {
 		AppendInPlace(&sl, i)
@@ -67,6 +70,7 @@ func MakeSeq(min, max int) []int {
 	return sl
 }
 
+// Return a copy of a slice without a specific integer included as an element
 func Drop(sl []int, i int) []int {
 	new := []int{}
 	for _, v := range sl {
@@ -77,6 +81,7 @@ func Drop(sl []int, i int) []int {
 	return new
 }
 
+// Return a copy of a slice without a specific integer included as an element
 func DropString(sl []string, s string) []string {
 	new := []string{}
 	for _, v := range sl {
@@ -87,8 +92,8 @@ func DropString(sl []string, s string) []string {
 	return new
 }
 
+// Test if string is a key in a map
 func IsInMap(key string, m map[string]int) bool {
-	// test if string is a key in a map
 	for k := range m {
 		if k == key {
 			return true
@@ -97,8 +102,8 @@ func IsInMap(key string, m map[string]int) bool {
 	return false
 }
 
+// Convert map keys to a slice of unique strings
 func MapToSlice(m map[string]int) []string {
-	// convert map to a slice of unique strings
 	s := []string{}
 	for k := range m {
 		s = append(s, k)
@@ -108,8 +113,8 @@ func MapToSlice(m map[string]int) []string {
 
 // Some basic math functions
 
+// Sum all integers in a slice
 func Sum(sl []int) int {
-	// sum all integers in a slice
 	tot := 0
 	for _, v := range sl {
 		tot += v
@@ -117,8 +122,8 @@ func Sum(sl []int) int {
 	return tot
 }
 
+// Find min integer in a slice
 func Min(sl []int) int {
-	// find min integer in a slice
 	m := sl[0]
 	for _, v := range sl {
 		if v < m {
@@ -128,8 +133,8 @@ func Min(sl []int) int {
 	return m
 }
 
+// Find max integer in a slice
 func Max(sl []int) int {
-	// find max integer in a slice
 	m := sl[0]
 	for _, v := range sl {
 		if v > m {
